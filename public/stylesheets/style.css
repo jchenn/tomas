@@ -1,0 +1,84 @@
+body {
+  padding: 50px;
+  font: 14px 'microsoft yahei', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  height: auto;
+  background: url('/images/bg-body.gif') repeat;
+}
+
+h1, h2, h3, h4, h5, h6, .button {
+  font-family: 'microsoft yahei', 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+h4 {
+  font-size: 1.125rem;
+}
+
+main {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+thead th {
+  width: 100px;
+}
+
+thead th.auto {
+  width: auto;
+}
+
+table .button {
+  margin: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.button.link {
+  background: transparent;
+}
+
+.button.link:hover {
+  text-decoration: underline;
+}
+
+.button-group .button.link {
+  border: none;
+}
+
+.left-off-canvas-menu {
+  background: transparent;
+  color: #fff;
+  width: 30rem;
+}
+
+.move-right > .inner-wrap {
+  transform: translateX(30rem);
+}
+
+.left-off-canvas-menu > section {
+  margin: 20px;
+}
+
+.left-off-canvas-menu label,
+.left-off-canvas-menu h4 {
+  color: #fff;
+}
+
+textarea {
+  min-height: 150px;
+}
+
+label {
+  margin: 0 0 10px;
+}
+
+.value {
+  line-height: 2rem;
+  margin: .2rem 0 .7rem;
+}

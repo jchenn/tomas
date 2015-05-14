@@ -1,0 +1,85 @@
+extends layout
+
+block content
+  #app.off-canvas-wrap(data-offcanvas): .inner-wrap
+    aside#side-bar.left-off-canvas-menu(v-component='v-side-bar' inline-template)
+      section#menu-add(v-component='v-menu-add' inline-template v-class='hide: isHide["v-menu-add"]')
+        div
+          form.clearfix
+            label 地址
+            textarea
+            ul.button-group.right
+              li: button.button.tiny(v-on='click: click') 添加
+      section#status-add(v-component='v-status-add' inline-template v-class='hide: isHide["v-status-add"]')
+        div(v-class='hide: isHide')
+          p 添加成功（0个相似） 或者 失败：已存在
+          p.text-center
+            a 继续添加
+            a 查看
+      section#menu-import(v-component='v-menu-import' inline-template)
+        div(v-class='hide: isHide')
+          form.clearfix
+            input(type='file' name='importFile')
+            ul.button-group.right
+              li: button.button.tiny 导入
+              li: a.button.tiny.link 取消
+      section#status-import.hide
+        p 成功导入 <a href='#'><strong>10</strong></a> 个，失败 <a href='#'><strong>5</strong></a> 个
+      section#menu-detail(v-component='v-menu-detail' inline-template)
+        div(v-class='hide: isHide')
+          h4.columns.medium-12 标题
+          p.columns.medium-12(v-text='movie.title ? movie.title : movie.fileName') # Str8 To Gay - Body Painting
+          .row
+            .columns.medium-3: h4 厂牌
+            .columns.medium-9: a.value(v-text='movie.brand ? movie.brand : "(unknown)"') # MEN
+          .row
+            .columns.medium-3: h4 日期
+            .columns.medium-9: span.value(v-text='movie.date ? movie.date : "(unknown)"') (unknown)
+          .row
+            h4.columns.medium-3 演员
+            ul.inline-list.columns.medium-9
+              li(v-repeat='movie.actors'): a: span.label(v-text='name') (unknown)
+          .row
+            .columns.medium-3: h4 文件大小
+            .columns.medium-3: span.value(v-text='movie.size') # 595.24 MB
+            .columns.medium-3: h4 文件类型
+            .columns.medium-3: span.value(v-text='movie.type') # mp4
+          .row
+            .columns.medium-12: ul.button-group.right
+              li: button.button.tiny 修改
+    main
+      section.clearfix(v-component='v-tool-bar' inline-template)
+        .medium-3.columns
+          ul.button-group
+            li: a.button(href='#' title='添加' v-on='click: openAddMenu'): span.fa.fa-plus
+            li: a.button(href='#' title='导入' v-on='click: openImportMenu'): span.fa.fa-file-o
+        .medium-9.columns
+      section.body.clearfix(v-component='v-list' inline-template)
+        .columns.medium-12: table
+          thead: tr
+            th #
+            th.auto 名称
+            th 大小
+            th 类型
+            th 操作
+          tbody
+            tr(v-repeat='movies')
+              td(v-text='$index + 1')
+              td: a(v-text='fileName' v-on='click: openDetail($index)')
+              td(v-text='size')
+              td(v-text='type')
+              td: a.button.tiny: span.fa.fa-times
+    a.exit-off-canvas
+  
+  #demo
+    h1(v-text='"hello " + name')
+    div(v-component='t-hello')
+    div(v-component='t-next' inline-template)
+      a(v-on='click: log' v-text='name' v-class='abc: hasError')
+      div(v-component='t-next' inline-template)
+        a(v-on='click: log' v-text='name')
+
+  script(src='/foundation/js/foundation.js')
+  script(src='/vue/dist/vue.js')
+  script(src='/javascripts/tomas.js')
+  
