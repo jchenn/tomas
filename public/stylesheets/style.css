@@ -51,25 +51,6 @@ table .button {
   border: none;
 }
 
-.left-off-canvas-menu {
-  background: transparent;
-  color: #fff;
-  width: 30rem;
-}
-
-.move-right > .inner-wrap {
-  transform: translateX(30rem);
-}
-
-.left-off-canvas-menu > section {
-  margin: 20px;
-}
-
-.left-off-canvas-menu label,
-.left-off-canvas-menu h4 {
-  color: #fff;
-}
-
 textarea {
   min-height: 150px;
 }
@@ -81,4 +62,72 @@ label {
 .value {
   line-height: 2rem;
   margin: .2rem 0 .7rem;
+}
+
+.off-canvas-wrap > aside {
+  position: fixed;
+  right: 0;
+  top: 0;
+  background: #333 url('/images/bg-body.gif') repeat;
+  color: #fff;
+  width: 470px;
+  height: 100%;
+  z-index: 99;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform ease-out .3s;
+}
+
+.off-canvas-wrap > aside > .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 2em;
+  z-index: 999;
+}
+
+.off-canvas-wrap > aside h4,
+.off-canvas-wrap > aside label {
+  color: #fff;
+}
+
+.off-canvas-wrap > aside.active {
+  transform: translateX(0);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .75);
+}
+
+.off-canvas-wrap > aside.active + .exit-off-canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, .2);
+  transition: all .1s;
+}
+
+.off-canvas-wrap > aside.active + .exit-off-canvas:hover {
+  background: rgba(255, 255, 255, .1);
+}
+
+.off-canvas-wrap > aside > section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 50px 20px;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity ease-out .2s;
+}
+
+.off-canvas-wrap > aside > section.active {
+  z-index: 2;
+  opacity: 1;
 }

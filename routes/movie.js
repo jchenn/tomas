@@ -27,33 +27,53 @@ router.post('/delete', function(req, res) {
     if (err) {
       res.send({errno: 1, message: err.message});
     } else {
-      res.send({errno: 0});
+      res.send({errno: 0, hash: hash});
     }
   })
-});
-
-router.get('/rename', function(req, res) {
-  var movie = req.body;
-  util.renameMovie(movie);
-  if (movie.fileName === movie.type) {
-    res.send({errno: 1, message: '文件名不正确'});
-  } else {
-    res.send({errno: 0, data: {fileName: movie.fileName, title: movie.title}});
-  }
 });
 
 router.post('/update', function(req, res) {
-  var movie = req.body;
+  var data = req.body;
+  console.log(data);
 
-  // TODO check if the request body is forged
-
-  movieDao.update(movie, function(err) {
+  // get movie
+  movieDao.get(data.hash, function(err, movie) {
     if (err) {
       res.send({errno: 1, message: err.message});
     } else {
-      res.send({errno: 0, data: movie});
+      movie.brand = data.brand;
+      movie.seriesName = data.seriesName;
+      movie.sno = data.sno;
+      movie.seasonName = data.seasonName;
+      movie.showName = data.showName;
+      movie.eno = data.eno;
+      movie.episodeName = data.episodeName;
+      movie.cno = data.cno;
+      movie.date = data.date;
+      movie.actors = typeof data.actors === 'string' ? JSON.parse(data.actors) : data.actors;
+      console.log(movie.actors);
+
+      movie.finished = data.finished;
+      movie.thumbup = data.thumbup;
+
+      // rename movie
+      util.renameMovie(movie);
+      if (movie.fileName === movie.type) {
+        res.send({errno: 1, message: '文件名不正确'});
+      } else {
+
+        // update movie
+        movieDao.update(movie, function(err) {
+          if (err) {
+            res.send({errno: 1, message: err.message});
+          } else {
+            res.send({errno: 0, data: movie});
+          }
+        });
+      }
     }
-  })
+  });
+  
 });
 
 router.get('/list', function(req, res) {

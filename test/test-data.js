@@ -42,7 +42,6 @@ var movies = [
     type: 'avi',
     createDate: '2015.5.8',
     url: 'ed2k://|file|Gay - Channel One - A Night At Bruno\'s DVD.avi|1153286144|798181E11436CF0CD01CD05CD69F90BE|/',
-    urlModified: 'ed2k://|file|Channel One - A Night At Bruno\'s DVD.avi|1153286144|798181E11436CF0CD01CD05CD69F90BE|/'
     bytes: '1153286144',
     rootHash: '',
     finished: false,

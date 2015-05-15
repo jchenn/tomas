@@ -13,6 +13,25 @@ describe('server', function() {
   });
 });
 
+describe('/api/movie/delete', function() {
+  it('should delete a movie', function(done) {
+    request.post('/api/movie/delete').
+      send({hash: movies[1].hash}).
+      expect(200).
+      expect('content-type', 'application/json; charset=utf-8').
+      end(function(err, res) {
+        expect(res.body.errno).to.be.a('number');
+        if (res.body.errno != 0) {
+          expect(res.body.message).to.be.a('string');
+          console.log(res.body.message);
+        }
+        done(err);
+      });
+    // console.log('commented');
+    // done();
+  });
+});
+
 describe('/api/movie/add', function() {
   it('should should add a movie', function(done) {
     request.post('/api/movie/add').
@@ -31,6 +50,7 @@ describe('/api/movie/add', function() {
           expect(body.data).to.be.an('object');
         } else {
           expect(body.message).to.be.a('string');
+          console.log(body.message);
         }
         done(err);
       });
@@ -51,56 +71,23 @@ describe('/api/movie/list', function() {
   });
 });
 
-describe('/api/movie/rename', function() {
-  it('should return a proper file name', function(done) {
-    request.get('/api/movie/rename').
-      send(movies[0]).
-      expect(200).
-      expect('content-type', 'application/json; charset=utf-8').
-      end(function(err, res) {
-        expect(res.body.errno).to.be.a('number');
-        if(res.body.errno == 0) {
-          expect(res.body.data.fileName).to.equal(movies[0].fileName);
-        } else {
-          expect(res.body.message).to.be.a('string');
-        }
-        done(err);
-      });
-  });
-});
-
 describe('/api/movie/update', function() {
   it('should change a movie\'s file name', function(done) {
     request.post('/api/movie/update').
-      send(movies[0]).
+      send(movies[1]).
       expect(200).
       expect('content-type', 'application/json; charset=utf-8').
       end(function(err, res) {
         expect(res.body.errno).to.be.a('number');
         if (res.body.errno == 0) {
-          expect(res.body.data.fileName).to.equal(movies[0].fileName);
+          expect(res.body.data.fileName).to.equal(movies[1].fileName);
+          expect(res.body.data.actors.length).to.be.a('number');
         } else {
-          expect(res.body.message).bo.be.a('string');
+          expect(res.body.message).to.be.a('string');
+          console.log(res.body.message);
         }
         done(err);
       });
   });
 });
 
-describe('/api/movie/delete', function() {
-  it('should delete a movie', function(done) {
-    // request.post('/api/movie/delete').
-    //   send({hash: movies[0].hash}).
-    //   expect(200).
-    //   expect('content-type', 'application/json; charset=utf-8').
-    //   end(function(err, res) {
-    //     expect(res.body.errno).to.be.a('number');
-    //     if (res.body.errno != 0) {
-    //       expect(res.body.message).to.be.a('string');
-    //     }
-    //     done(err);
-    //   });
-    console.log('commented');
-    done();
-  });
-});

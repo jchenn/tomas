@@ -1,52 +1,7 @@
 extends layout
 
 block content
-  #app.off-canvas-wrap(data-offcanvas): .inner-wrap
-    aside#side-bar.left-off-canvas-menu(v-component='v-side-bar' inline-template)
-      section#menu-add(v-component='v-menu-add' inline-template v-class='hide: isHide["v-menu-add"]')
-        div
-          form.clearfix
-            label 地址
-            textarea
-            ul.button-group.right
-              li: button.button.tiny(v-on='click: click') 添加
-      section#status-add(v-component='v-status-add' inline-template v-class='hide: isHide["v-status-add"]')
-        div(v-class='hide: isHide')
-          p 添加成功（0个相似） 或者 失败：已存在
-          p.text-center
-            a 继续添加
-            a 查看
-      section#menu-import(v-component='v-menu-import' inline-template)
-        div(v-class='hide: isHide')
-          form.clearfix
-            input(type='file' name='importFile')
-            ul.button-group.right
-              li: button.button.tiny 导入
-              li: a.button.tiny.link 取消
-      section#status-import.hide
-        p 成功导入 <a href='#'><strong>10</strong></a> 个，失败 <a href='#'><strong>5</strong></a> 个
-      section#menu-detail(v-component='v-menu-detail' inline-template)
-        div(v-class='hide: isHide')
-          h4.columns.medium-12 标题
-          p.columns.medium-12(v-text='movie.title ? movie.title : movie.fileName') # Str8 To Gay - Body Painting
-          .row
-            .columns.medium-3: h4 厂牌
-            .columns.medium-9: a.value(v-text='movie.brand ? movie.brand : "(unknown)"') # MEN
-          .row
-            .columns.medium-3: h4 日期
-            .columns.medium-9: span.value(v-text='movie.date ? movie.date : "(unknown)"') (unknown)
-          .row
-            h4.columns.medium-3 演员
-            ul.inline-list.columns.medium-9
-              li(v-repeat='movie.actors'): a: span.label(v-text='name') (unknown)
-          .row
-            .columns.medium-3: h4 文件大小
-            .columns.medium-3: span.value(v-text='movie.size') # 595.24 MB
-            .columns.medium-3: h4 文件类型
-            .columns.medium-3: span.value(v-text='movie.type') # mp4
-          .row
-            .columns.medium-12: ul.button-group.right
-              li: button.button.tiny 修改
+  #app.off-canvas-wrap
     main
       section.clearfix(v-component='v-tool-bar' inline-template)
         .medium-3.columns
@@ -68,16 +23,120 @@ block content
               td: a(v-text='fileName' v-on='click: openDetail($index)')
               td(v-text='size')
               td(v-text='type')
-              td: a.button.tiny: span.fa.fa-times
-    a.exit-off-canvas
-  
-  #demo
-    h1(v-text='"hello " + name')
-    div(v-component='t-hello')
-    div(v-component='t-next' inline-template)
-      a(v-on='click: log' v-text='name' v-class='abc: hasError')
-      div(v-component='t-next' inline-template)
-        a(v-on='click: log' v-text='name')
+              td: a.button.tiny(v-on='click: openDelete($index)'): span.fa.fa-times
+    aside#side-bar(v-component='v-side-bar' inline-template)
+      a.close(v-on='click: hideSideBar' href='#'): span.fa.fa-times-circle-o
+      section#menu-add(v-component='v-menu-add' inline-template)
+        label 地址
+        textarea(v-model='url')
+        ul.button-group.right
+          li: button.button.tiny(v-on='click: click' v-class='pending: isPending') 添加
+      section#status-add(v-component='v-status-add' inline-template)
+        div(v-class='hide: isSuccess')
+          p.text-center
+            span(v-text='message') (已存在)
+          p.text-center
+            a(v-on='click: openAddMenu') 修改
+        div(v-class='hide: !isSuccess')
+          p.text-center 添加成功
+          p.text-center
+            a(v-on='click: openAddMenu') 继续添加
+            |  
+            a(v-on='click: openDetail') 查看
+      section#menu-import(v-component='v-menu-import' inline-template)
+        form.clearfix
+          input(type='file' name='importFile')
+          ul.button-group.right
+            li: button.button.tiny 导入
+            li: a.button.tiny.link 取消
+      section#status-import.hide
+        p 成功导入 <a href='#'><strong>10</strong></a> 个，失败 <a href='#'><strong>5</strong></a> 个
+      section#menu-detail(v-component='v-menu-detail' inline-template)
+          h4.columns.medium-12 标题
+          p.columns.medium-12(v-text='movie.title ? movie.title : movie.fileName') # Str8 To Gay - Body Painting
+          .row
+            .columns.medium-3: h4 厂牌
+            .columns.medium-9: a.value(v-text='movie.brand ? movie.brand : "(unknown)"') # MEN
+          .row
+            .columns.medium-3: h4 日期
+            .columns.medium-9: span.value(v-text='movie.date ? movie.date : "(unknown)"') (unknown)
+          .row
+            h4.columns.medium-3 演员
+            ul.inline-list.columns.medium-9
+              li(v-repeat='movie.actors'): a: span.label(v-text='name') (unknown)
+          .row
+            .columns.medium-3: h4 文件大小
+            .columns.medium-3: span.value(v-text='movie.size') # 595.24 MB
+            .columns.medium-3: h4 文件类型
+            .columns.medium-3: span.value(v-text='movie.type') # mp4
+          .row
+            .columns.medium-12: ul.button-group.right
+              li: button.button.tiny(v-on='click: update') 修改
+              li: button.button.tiny.link(v-on='click: delete') 删除
+      section#menu-update(v-component='v-menu-update' inline-template)
+        h4.columns.medium-12 原标题
+        p.columns.medium-12(v-text='movie.originalFileName')
+        .row
+          .columns.medium-3: h4 厂牌
+          .columns.medium-9: input(type='text' v-model='movieUpdated.brand')
+        .row
+          .columns.medium-3: h4 系列名称
+          .columns.medium-9: input(type='text' v-model='movieUpdated.seriesName')
+        .row
+          .columns.medium-3: h4 是否季播
+          .columns.medium-9
+            label.columns.medium-4
+              input(type='radio' name='isSeason' v-model='isSeason' value='true')
+              |  是
+            label.columns.medium-4.end
+              input(type='radio' name='isSeason' v-model='isSeason' value='false')
+              |  否
+        .row(v-class='hide: isSeason === "false"')
+          .columns.medium-3: h4 季序号
+          .columns.medium-9: input(type='text' v-model='movieUpdated.sno')
+        .row(v-class='hide: isSeason === "false"')
+          .columns.medium-3: h4 季名
+          .columns.medium-9: input(type='text' v-model='movieUpdated.seasonName')
+        .row(v-class='hide: isSeason === "true"')
+          .columns.medium-3: h4 剧名
+          .columns.medium-9: input(type='text' v-model='movieUpdated.showName')
+        .row
+          .columns.medium-3: h4 集序号
+          .columns.medium-9: input(type='text' v-model='movieUpdated.eno')
+        .row
+          .columns.medium-3: h4 集名称
+          .columns.medium-9: input(type='text' v-model='movieUpdated.episodeName')
+        .row
+          .columns.medium-3: h4 片段序号
+          .columns.medium-9: input(type='text' v-model='movieUpdated.cno')
+        .row
+          .columns.medium-3: h4 日期
+          .columns.medium-9: input(type='text' v-model='movieUpdated.date')
+        .row
+          .columns.medium-3: h4 演员
+          .columns.medium-9: input(type='text' v-model='actors')
+        .row
+            .columns.medium-12: ul.button-group.right
+              li: button.button.tiny(v-on='click: submit') 提交
+              li: button.button.tiny.link(v-on='click: cancel') 取消
+      section#status-update(v-component='v-status-update' inline-template)
+        p.text-center(v-text='message')
+        ul.button-group.right
+          li: button.button.tiny(v-on='click: openDetail') 查看
+          li: a.button.tiny.link(v-on='click: close') 关闭
+      section#menu-delete(v-component='v-menu-delete' inline-template)
+        p
+          | 是否删除 "
+          span(v-text='movie.fileName')
+          | "?
+        ul.button-group.right
+          li: button.button.tiny(v-on='click: delete') 确定
+          li: a.button.tiny.link(v-on='click: cancel') 取消
+      section#status-delete(v-component='v-status-delete' inline-template)
+        p(v-text='message')
+        ul.button-group.right
+          li: button.button.tiny(v-on='click: close') 关闭
+    // a.exit-off-canvas(v-on='click: hide')
 
   script(src='/foundation/js/foundation.js')
   script(src='/vue/dist/vue.js')
