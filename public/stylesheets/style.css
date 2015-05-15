@@ -39,6 +39,10 @@ table .button {
   box-sizing: border-box;
 }
 
+.button.compact {
+  padding: .2rem .3rem;
+}
+
 .button.link {
   background: transparent;
 }

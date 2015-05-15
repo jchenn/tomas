@@ -23,7 +23,15 @@ block content
               td: a(v-text='fileName' v-on='click: openDetail($index)')
               td(v-text='size')
               td(v-text='type')
-              td: a.button.tiny(v-on='click: openDelete($index)'): span.fa.fa-times
+              td
+                a.button.compact(v-on='click: openDelete($index)'): span.fa.fa-times
+                |  
+                a.button.compact(v-on='click: copy($index)'): span.fa.fa-copy
+      section.columns.medium-12(v-component='v-pagination' inline-template)
+        ul.pagination
+          li.arrow(v-class='unavailable: p <= 1'): a(v-on='click: goto(p - 1)') &laquo;
+          li(v-repeat='ctrls' v-class='current: p == $value'): a(v-on='click: goto($value)' v-text='$value')
+          li.arrow(v-class='unavailable: p >= n'): a(v-on='click: goto(p + 1)') &raquo;
     aside#side-bar(v-component='v-side-bar' inline-template)
       a.close(v-on='click: hideSideBar' href='#'): span.fa.fa-times-circle-o
       section#menu-add(v-component='v-menu-add' inline-template)
@@ -36,13 +44,15 @@ block content
           p.text-center
             span(v-text='message') (已存在)
           p.text-center
-            a(v-on='click: openAddMenu') 修改
+            a(v-on='click: openAddMenu') 返回
         div(v-class='hide: !isSuccess')
           p.text-center 添加成功
           p.text-center
             a(v-on='click: openAddMenu') 继续添加
             |  
             a(v-on='click: openDetail') 查看
+            | 
+            a(v-on='click: openUpdate') 修改
       section#menu-import(v-component='v-menu-import' inline-template)
         form.clearfix
           input(type='file' name='importFile')

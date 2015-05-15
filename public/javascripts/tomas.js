@@ -20,12 +20,12 @@ $(document).ready(function() {
       click: function() {
         this.$set('isPending', true);
 
-        console.log('url', this.url);
+        // console.log('url', this.url);
 
         $.post('/api/movie/add', {
           url: this.url
         }, function(responseText) {
-          console.log(responseText);
+          // console.log(responseText);
           this.$set('isPending', false);
           this.$dispatch('open-status-add', responseText);
         }.bind(this));
@@ -33,8 +33,9 @@ $(document).ready(function() {
       }
     },
     events: {
-      show: function(name) {
+      show: function(name, url) {
         if (name === 'v-menu-add') {
+          this.$set('url', url ? url : '');
           this.$set('isPending', false);
           $(this.$el).addClass('active');
         } else {
@@ -77,6 +78,9 @@ $(document).ready(function() {
       },
       openDetail: function() {
         this.$dispatch('open-detail', this.movie);
+      },
+      openUpdate: function() {
+        this.$dispatch('open-update', this.movie);
       }
     }
   });
@@ -151,15 +155,18 @@ $(document).ready(function() {
 
         // console.log(this.actors);
         this.movieUpdated.actors = JSON.stringify(
-          this.actors.split(/[,&]/).map(function(v) {
-            return {name: v.trim()};
-          })
+          this.actors.split(/[,&]/).reduce(function(arr, v) {
+            if (v.trim().length > 0) {
+              arr.push({name: v.trim()});
+            }
+            return arr;
+          }, [])
         );
         // console.log(this.movieUpdated.actors);
         // console.log(JSON.stringify(this.movieUpdated));
 
         $.post('/api/movie/update', this.movieUpdated, function(responseText) {
-          console.log(responseText);
+          // console.log(responseText);
           this.$dispatch('open-status-update', responseText);
         }.bind(this));
       },
@@ -170,7 +177,7 @@ $(document).ready(function() {
     events: {
       show: function(name, movie) {
         if (name === 'v-menu-update') {
-          console.log('update', movie);
+          // console.log('update', movie);
           this.$set('movie', movie);
           this.$set('movieUpdated', JSON.parse(JSON.stringify(movie)));
 
@@ -235,7 +242,7 @@ $(document).ready(function() {
         $.post('/api/movie/delete', {
           hash: this.movie.hash
         }, function(responseText) {
-          console.log(responseText);
+          // console.log(responseText);
           this.$dispatch('open-status-delete', responseText);
         }.bind(this));
       },
@@ -325,7 +332,6 @@ $(document).ready(function() {
         // $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-right');
       },
       openImportMenu: function() {
-        console.log('click');
         this.$dispatch('open-import');
         // $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-right');
       }
@@ -334,12 +340,9 @@ $(document).ready(function() {
 
   Vue.component('v-list', {
     data: function() {
-      // console.log('data');
       $.get('/api/movie/list').success(function(responseText) {
-        // console.log(this);
         // TODO what if responseText.errno == 1?
-        this.$set('movies', responseText.data);
-        // this.$emit('dataRetrived', responseText);
+        this.$dispatch('movie-list', responseText.data);
       }.bind(this));
       
       return {
@@ -351,51 +354,49 @@ $(document).ready(function() {
         this.$dispatch('open-detail', this.movies[index]);
         // $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-right');
       },
-      dataRetrived: function(responseText) {
-        console.log(responseText);
-        this.movies = responseText;
-      },
       openDelete: function(index) {
         this.$dispatch('open-delete', this.movies[index]);
+      },
+      copy: function(index) {
+        console.log(this.movies[index].url);
       }
     },
     events: {
-      movieAdded: function(movie) {
-        // console.log('movie-add', movie);
-        var movies = this.movies;
-        movies.push(movie);
+      pageChanged: function(movies) {
+        // console.log(movies);
+        this.$delete('movies');
         this.$set('movies', movies);
-      },
-      movieDeleted: function(hash) {
-        console.log('movie-delete', hash);
-        var movies = this.movies, index = -1;
-        movies.forEach(function(v, i) {
-          if (v.hash === hash) {
-            index = i;
-          }
-        });
+      }
+    }
+  });
 
-        if (index > -1) {
-          movies.splice(index, 1);
-          this.$set('movies', movies);
-        }
-      },
-      movieUpdated: function(movie) {
-        console.log('movie-update', movie);
-        var movies = this.movies, index = -1;
-        movies.forEach(function(v, i) {
-          if (v.hash === movie.hash) {
-            index = i;
+  Vue.component('v-pagination', {
+    data: function() {
+      // n, pageCount
+      // p, currentPage
+    },
+    methods: {
+      goto: function(p) {
+        // console.log(p);
+        if (p > 0 && p <= this.n) {
+          var ctrls = [], i = 1;
+          for (; i <= this.n; ++i) {
+            ctrls.push(i);
           }
-        });
 
-        if (index > -1) {
-          movies[index] = movie;
-          // console.log(movie.fileName);
-          // force to change reference
-          this.$delete('movies');
-          this.$set('movies', movies);
+          this.$set('p', p);
+          this.$set('ctrls', ctrls);
+
+          this.$dispatch('change-page', p);
         }
+      }
+    },
+    events: {
+      setPageInfo: function(data) {
+        this.$set('n', data.pageCount);
+
+        // console.log('page count', this.n);
+        this.goto(data.currentPage);
       }
     }
   });
@@ -403,7 +404,8 @@ $(document).ready(function() {
   var vApp = new Vue({
     el: '#app',
     data: {
-      movies: []
+      movies: [],
+      itemPerPage: 10
     },
     methods: {
       hide: function() {
@@ -445,14 +447,56 @@ $(document).ready(function() {
       'open-status-update': function(responseText) {
         this.$broadcast('show', 'v-status-update', responseText);
       },
+      'movie-list': function(movies, page) {
+        // console.log('movie-list');
+        this.$set('movies', movies);
+
+        this.$broadcast('setPageInfo', {
+          pageCount: movies.length % this.itemPerPage === 0 ? 
+                      movies.length / this.itemPerPage : 
+                      ~~(movies.length / this.itemPerPage + 1),
+          currentPage: page || 1
+        });
+      },
       'movie-add': function(movie) {
-        this.$broadcast('movieAdded', movie);
+        var movies = this.movies;
+        movies.push(movie);
+        this.$emit('movie-list', movies, this.currentPage);
       },
       'movie-delete': function(hash) {
-        this.$broadcast('movieDeleted', hash);
+        var movies = this.movies, index = -1;
+        movies.forEach(function(v, i) {
+          if (v.hash === hash) {
+            index = i;
+          }
+        });
+
+        if (index > -1) {
+          movies.splice(index, 1);
+        }
+
+        this.$emit('movie-list', movies, this.currentPage);
       },
       'movie-update': function(movie) {
-        this.$broadcast('movieUpdated', movie);
+        var movies = this.movies, index = -1;
+        movies.forEach(function(v, i) {
+          if (v.hash === movie.hash) {
+            index = i;
+          }
+        });
+
+        if (index > -1) {
+          movies[index] = movie;
+          // console.log(movie.fileName);
+          // force to change reference
+          this.$delete('movies');
+        }
+        this.$emit('movie-list', movies, this.currentPage);
+      },
+      'change-page': function(page) {
+        var beg = this.itemPerPage * (page - 1);
+        this.$set('currentPage', page);
+        this.$broadcast('pageChanged', this.movies.slice(beg, beg + this.itemPerPage));
       }
     }
   });

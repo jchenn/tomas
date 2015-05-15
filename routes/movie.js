@@ -34,24 +34,29 @@ router.post('/delete', function(req, res) {
 
 router.post('/update', function(req, res) {
   var data = req.body;
-  console.log(data);
+  // console.log(data);
 
   // get movie
   movieDao.get(data.hash, function(err, movie) {
     if (err) {
       res.send({errno: 1, message: err.message});
     } else {
-      movie.brand = data.brand;
+      if (data.brand && data.brand.trim().length > 0) {
+        movie.brand = data.brand.trim();
+      }
+      
       movie.seriesName = data.seriesName;
       movie.sno = data.sno;
       movie.seasonName = data.seasonName;
-      movie.showName = data.showName;
+      if (data.showName && data.showName.trim().length > 0) {
+        movie.showName = data.showName.trim();
+      }
       movie.eno = data.eno;
       movie.episodeName = data.episodeName;
       movie.cno = data.cno;
       movie.date = data.date;
       movie.actors = typeof data.actors === 'string' ? JSON.parse(data.actors) : data.actors;
-      console.log(movie.actors);
+      // console.log(movie.actors);
 
       movie.finished = data.finished;
       movie.thumbup = data.thumbup;
