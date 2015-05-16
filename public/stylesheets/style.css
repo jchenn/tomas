@@ -39,6 +39,10 @@ table .button {
   box-sizing: border-box;
 }
 
+.force-hide {
+  display: none !important;
+}
+
 .button.compact {
   padding: .2rem .3rem;
 }
@@ -134,10 +138,12 @@ label {
   padding: 50px 20px;
   z-index: 1;
   opacity: 0;
+  1visibility: hidden;
   transition: opacity ease-out .2s;
 }
 
 .off-canvas-wrap > aside > section.active {
-  z-index: 2;
+  z-index: 9;
   opacity: 1;
+  1visibility: visible;
 }

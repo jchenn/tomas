@@ -47,13 +47,6 @@ $(document).ready(function() {
   });
 
   Vue.component('v-status-add', {
-    data: function() {
-      return {
-        movie: {},
-        message: '',
-        isSuccess: false
-      };
-    },
     events: {
       show: function(name, responseText) {
         if (name === 'v-status-add') {
@@ -64,6 +57,7 @@ $(document).ready(function() {
           } else {
             this.$set('isSuccess', false);
             this.$set('message', responseText.message);
+            // console.log(responseText.movie);
             this.$set('movie', responseText.movie);
           }
           
@@ -159,7 +153,7 @@ $(document).ready(function() {
 
         // console.log(this.actors);
         this.movieUpdated.actors = JSON.stringify(
-          this.actors.split(/[,&]/).reduce(function(arr, v) {
+          this.actors.split(/[,&\-\+]|\band\b/i).reduce(function(arr, v) {
             if (v.trim().length > 0) {
               arr.push({name: v.trim()});
             }
@@ -360,7 +354,7 @@ $(document).ready(function() {
         this.$dispatch('open-delete', this.movies[index]);
       },
       copy: function(index) {
-        // console.log(this.movies[index].url);
+        console.log(this.movies[index].url);
         alert(this.movies[index].url);
       }
     },

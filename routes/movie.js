@@ -45,18 +45,39 @@ router.post('/update', function(req, res) {
     if (err) {
       res.send({errno: 1, message: err.message});
     } else {
+      // trim brand
       if (data.brand && data.brand.trim().length > 0) {
         movie.brand = data.brand.trim();
+      } else {
+        movie.brand = '';
       }
       
-      movie.seriesName = data.seriesName;
+      // trim seriesName
+      if (data.seriesName && data.seriesName.trim().length > 0) {
+        movie.seriesName = data.seriesName.trim();
+      } else {
+        movie.seriesName = '';
+      }
+     
       movie.sno = data.sno;
       movie.seasonName = data.seasonName;
+
+      // trim showName
       if (data.showName && data.showName.trim().length > 0) {
         movie.showName = data.showName.trim();
+      } else {
+        movie.showName = '';
       }
+
       movie.eno = data.eno;
-      movie.episodeName = data.episodeName;
+
+      // trim episodeName
+      if (data.episodeName && data.episodeName.trim().length > 0) {
+        movie.episodeName = data.episodeName.trim();
+      } else {
+        movie.episodeName = '';
+      }
+
       movie.cno = data.cno;
       movie.date = data.date;
       movie.actors = typeof data.actors === 'string' ? JSON.parse(data.actors) : data.actors;
