@@ -92,9 +92,15 @@ router.get('/list', function(req, res) {
 });
 
 router.get('/search', function(req, res) {
-  var q = (req.body.q ? req.body.q : '').split(/\W+/);
-  // TODO fix
-  res.send(q);
+  console.log(req.query);
+  var q = req.query.q || '';
+  movieDao.search(q.trim(), function(err, arr) {
+    if (err) {
+      res.send({errno: 1, message: err.message});
+    } else {
+      res.send({errno: 0, data: arr});
+    }
+  });
 });
 
 module.exports = router;

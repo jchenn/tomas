@@ -116,6 +116,9 @@ $(document).ready(function() {
       },
       delete: function() {
         this.$dispatch('open-delete', this.movie);
+      },
+      search: function(q) {
+        this.$dispatch('app-search', q);
       }
     },
     events: {
@@ -334,17 +337,15 @@ $(document).ready(function() {
       openImportMenu: function() {
         this.$dispatch('open-import');
         // $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-right');
+      },
+      search: function() {
+        this.$dispatch('app-search', this.q);
       }
     }
   });
 
   Vue.component('v-list', {
     data: function() {
-      $.get('/api/movie/list').success(function(responseText) {
-        // TODO what if responseText.errno == 1?
-        this.$dispatch('movie-list', responseText.data);
-      }.bind(this));
-      
       return {
         movies: []
       };
@@ -358,7 +359,8 @@ $(document).ready(function() {
         this.$dispatch('open-delete', this.movies[index]);
       },
       copy: function(index) {
-        console.log(this.movies[index].url);
+        // console.log(this.movies[index].url);
+        alert(this.movies[index].url);
       }
     },
     events: {
@@ -366,6 +368,14 @@ $(document).ready(function() {
         // console.log(movies);
         this.$delete('movies');
         this.$set('movies', movies);
+      },
+      search: function(q) {
+        // console.log(q);
+        var xhr = q? $.get('/api/movie/search', {q: q}) : $.get('/api/movie/list');
+        xhr.success(function(responseText) {
+          // TODO what if responseText.errno == 1?
+          this.$dispatch('movie-list', responseText.data);
+        }.bind(this));
       }
     }
   });
@@ -382,7 +392,7 @@ $(document).ready(function() {
           var ctrls = [], i = 1, headingCount = 7, expandCount = 2;
 
           if (this.n <= headingCount) {
-            for (i = 1; i < this.n; ++i) {
+            for (i = 1; i <= this.n; ++i) {
               ctrls.push(i);
             }
           } else {
@@ -429,8 +439,25 @@ $(document).ready(function() {
       itemPerPage: 20
     },
     methods: {
+      init: function() {
+        // console.log(location.hash);
+        $(window).on('hashchange', this.onhashchange);
+        this.onhashchange();
+      },
       hide: function() {
         this.$broadcast('hide');
+      },
+      onhashchange: function() {
+        var seg = /^#q=(.*)/.exec(location.hash), xhr;
+
+        if (seg) {
+          var q = decodeURIComponent(seg[1]);
+          // console.log(seg[1], q);
+          this.$broadcast('search', q);
+        } else {
+          // console.log(this);
+          this.$broadcast('search', null);
+        }
       }
     },
     events: {
@@ -518,9 +545,16 @@ $(document).ready(function() {
         var beg = this.itemPerPage * (page - 1);
         this.$set('currentPage', page);
         this.$broadcast('pageChanged', this.movies.slice(beg, beg + this.itemPerPage));
+      },
+      'app-search': function(q) {
+        location.hash = '#q=' + q;
+        // console.log('app-search', q, location.hash);
+        // this.$broadcast('search', q);
       }
     }
   });
+
+  vApp.init();
 
   // $(document).foundation();
 });
