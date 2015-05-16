@@ -379,9 +379,30 @@ $(document).ready(function() {
       goto: function(p) {
         // console.log(p);
         if (p > 0 && p <= this.n) {
-          var ctrls = [], i = 1;
-          for (; i <= this.n; ++i) {
-            ctrls.push(i);
+          var ctrls = [], i = 1, headingCount = 7, expandCount = 2;
+
+          if (this.n <= headingCount) {
+            for (i = 1; i < this.n; ++i) {
+              ctrls.push(i);
+            }
+          } else {
+            if (p <= headingCount - expandCount) {
+              for (i = 1; i <= headingCount; ++i) {
+                ctrls.push(i);
+              }
+            } else {
+              ctrls = [1, 2, 0];
+              i = p - expandCount;
+              if (p + expandCount - this.n > 0) {
+                i -= p + expandCount - this.n;
+              }
+              for (; i <= p + expandCount && i <= this.n; ++i) {
+                ctrls.push(i);
+              }
+            }
+            if (ctrls[ctrls.length - 1] < this.n) {
+              ctrls.push(0);
+            }
           }
 
           this.$set('p', p);
@@ -405,7 +426,7 @@ $(document).ready(function() {
     el: '#app',
     data: {
       movies: [],
-      itemPerPage: 10
+      itemPerPage: 20
     },
     methods: {
       hide: function() {
