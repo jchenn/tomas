@@ -48,9 +48,10 @@ block content
       section#status-add(v-component='v-status-add' inline-template)
         div(v-class='hide: isSuccess')
           p.text-center
-            span(v-text='message') (已存在)
+            span(v-text='message')
           p.text-center
-            a(v-on='click: openAddMenu') 返回
+            a.button.link(v-on='click: openAddMenu') 返回
+            a.button.link(v-on='click: openDetail' v-class='hide: !movie') 查看
         div(v-class='hide: !isSuccess')
           p.text-center 添加成功
           p.text-center

@@ -57,13 +57,14 @@ $(document).ready(function() {
     events: {
       show: function(name, responseText) {
         if (name === 'v-status-add') {
-          if (responseText.errno === 1) {
-            this.$set('isSuccess', false);
-            this.$set('message', responseText.message);
-          } else {
+          if (responseText.errno === 0) {
             this.$set('isSuccess', true);
             this.$set('movie', responseText.data);
             this.$dispatch('movie-add', responseText.data);
+          } else {
+            this.$set('isSuccess', false);
+            this.$set('message', responseText.message);
+            this.$set('movie', responseText.movie);
           }
           
           $(this.$el).addClass('active');

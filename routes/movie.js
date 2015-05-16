@@ -13,7 +13,11 @@ router.post('/add', function(req, res) {
 
   movieDao.add(movie, function(err) {
     if (err) {
-      res.send({errno: 1, message: err.message});
+      if (err.movie) {
+        res.send({errno: 1, message: err.message, movie: err.movie});
+      } else {
+        res.send({errno: 2, message: err.message});
+      }
     } else {
       res.send({errno: 0, data: movie});
     }
