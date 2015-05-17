@@ -27,7 +27,7 @@ block content
               td
                 span(v-text='$index + 1')
                 | &nbsp;&nbsp;
-                span.fa(v-class='fa-heart: flag == "2"')
+                span.fa(v-class='fa-heart-o: flag == "2", fa-heart: flag == "3"')
               td: a(v-text='fileName' v-on='click: openDetail($index)')
               td(v-text='size')
               td(v-text='type')
@@ -91,17 +91,18 @@ block content
             .columns.medium-3: h4 文件类型
             .columns.medium-3: span.value(v-text='movie.type')
           .row
-            .columns.medium-3: h4 状态
-            .columns.medium-9
-              .columns.medium-4: label
-                input(type='radio' name='flag' v-model='flag' value='0' v-on='click: mark')
-                |  未看
-              .columns.medium-4: label
-                input(type='radio' name='flag' v-model='flag' value='1' v-on='click: mark')
-                |  不好看
-              .columns.medium-4: label
-                input(type='radio' name='flag' v-model='flag' value='2' v-on='click: mark')
-                |  好看
+            .columns.medium-3: label
+              input(type='radio' name='flag' v-model='flag' value='0' v-on='click: mark')
+              |  未看
+            .columns.medium-3: label
+              input(type='radio' name='flag' v-model='flag' value='1' v-on='click: mark')
+              |  不好看
+            .columns.medium-3: label
+              input(type='radio' name='flag' v-model='flag' value='2' v-on='click: mark')
+              |  一般
+            .columns.medium-3: label
+              input(type='radio' name='flag' v-model='flag' value='3' v-on='click: mark')
+              |  好看
           .row
             .columns.medium-12: ul.button-group.right
               li: button.button.tiny(v-on='click: update') 修改
