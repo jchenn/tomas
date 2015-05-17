@@ -366,7 +366,7 @@ $(document).ready(function() {
       },
       copy: function(index) {
         console.log(this.movies[index].url);
-        alert(this.movies[index].url);
+        // alert(this.movies[index].url);
       }
     },
     events: {
