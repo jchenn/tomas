@@ -24,7 +24,10 @@ block content
             th 操作
           tbody
             tr(v-repeat='movies')
-              td(v-text='$index + 1')
+              td
+                span(v-text='$index + 1')
+                | &nbsp;&nbsp;
+                span.fa(v-class='fa-heart: flag == "2"')
               td: a(v-text='fileName' v-on='click: openDetail($index)')
               td(v-text='size')
               td(v-text='type')
