@@ -88,6 +88,18 @@ block content
             .columns.medium-3: h4 文件类型
             .columns.medium-3: span.value(v-text='movie.type')
           .row
+            .columns.medium-3: h4 状态
+            .columns.medium-9
+              .columns.medium-4: label
+                input(type='radio' name='flag' v-model='flag' value='0' v-on='click: mark')
+                |  未看
+              .columns.medium-4: label
+                input(type='radio' name='flag' v-model='flag' value='1' v-on='click: mark')
+                |  不好看
+              .columns.medium-4: label
+                input(type='radio' name='flag' v-model='flag' value='2' v-on='click: mark')
+                |  好看
+          .row
             .columns.medium-12: ul.button-group.right
               li: button.button.tiny(v-on='click: update') 修改
               li: button.button.tiny.link(v-on='click: delete') 删除

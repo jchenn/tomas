@@ -73,6 +73,10 @@ label {
   margin: 0 0 10px;
 }
 
+input[type='radio'] {
+  margin: .5rem 0 0;
+}
+
 .value {
   line-height: 2rem;
   margin: .2rem 0 .7rem;

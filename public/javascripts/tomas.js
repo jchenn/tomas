@@ -101,7 +101,6 @@ $(document).ready(function() {
   Vue.component('v-menu-detail', {
     data: function() {
       return {
-        isHide: true,
         movie: {}
       };
     },
@@ -114,6 +113,17 @@ $(document).ready(function() {
       },
       search: function(q) {
         this.$dispatch('app-search', q);
+      },
+      mark: function() {
+        // console.log(this.flag);
+        $.post('/api/movie/mark', {
+          hash: this.movie.hash,
+          flag: this.flag
+        }, function(responseText) {
+          if (responseText.errno === 0) {
+            this.$dispatch('movie-update', responseText.movie);
+          }
+        }.bind(this));
       }
     },
     events: {
@@ -122,6 +132,7 @@ $(document).ready(function() {
         if (name === 'v-menu-detail') {
           // console.log(movie);
           this.$set('movie', movie);
+          this.$set('flag', movie.flag);
           $(this.$el).addClass('active');
         } else {
           $(this.$el).removeClass('active');

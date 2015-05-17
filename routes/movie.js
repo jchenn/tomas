@@ -60,7 +60,12 @@ router.post('/update', function(req, res) {
       }
      
       movie.sno = data.sno;
-      movie.seasonName = data.seasonName;
+      // trim seasonName
+      if (data.seasonName && data.seasonName.trim().length > 0) {
+        movie.seasonName = data.seasonName.trim();
+      } else {
+        movie.seasonName = '';
+      }
 
       // trim showName
       if (data.showName && data.showName.trim().length > 0) {
@@ -103,8 +108,20 @@ router.post('/update', function(req, res) {
       }
     }
   });
-  
 });
+
+router.post('/mark', function(req, res) {
+  var hash = req.body.hash,
+      flag = req.body.flag;
+
+  movieDao.mark(hash, flag, function(err, movie) {
+    if (err) {
+      res.send({errno: 1, message: err.message});
+    } else {
+      res.send({errno: 0, movie: movie});
+    }
+  })
+})
 
 router.get('/list', function(req, res) {
   movieDao.list(function(err, arr) {
