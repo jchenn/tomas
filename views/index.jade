@@ -92,16 +92,16 @@ block content
             .columns.medium-3: span.value(v-text='movie.type')
           .row
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='0' v-on='click: mark')
+              input(type='radio' name='flag' v-model='flag' value='0' v-on='change: mark')
               |  未看
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='1' v-on='click: mark')
+              input(type='radio' name='flag' v-model='flag' value='1' v-on='change: mark')
               |  不好看
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='2' v-on='click: mark')
+              input(type='radio' name='flag' v-model='flag' value='2' v-on='change: mark')
               |  一般
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='3' v-on='click: mark')
+              input(type='radio' name='flag' v-model='flag' value='3' v-on='change: mark')
               |  喜欢
           .row
             .columns.medium-12: ul.button-group.right

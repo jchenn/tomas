@@ -115,7 +115,7 @@ $(document).ready(function() {
         this.$dispatch('app-search', q);
       },
       mark: function() {
-        // console.log(this.flag);
+        console.log(this.flag);
         $.post('/api/movie/mark', {
           hash: this.movie.hash,
           flag: this.flag
@@ -334,6 +334,11 @@ $(document).ready(function() {
   });
 
   Vue.component('v-tool-bar', {
+    data: function() {
+      return {
+        q: ''
+      }
+    },
     methods: {
       openAddMenu: function() {
         // console.log('click');
