@@ -18,7 +18,7 @@ block content
         .columns.medium-12: table
           thead: tr
             th #
-            th.auto 名称
+            th.auto: a(href='#' onclick='return false;' v-on='click: sort') 名称
             th 大小
             th 类型
             th 操作

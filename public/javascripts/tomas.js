@@ -115,7 +115,7 @@ $(document).ready(function() {
         this.$dispatch('app-search', q);
       },
       mark: function() {
-        console.log(this.flag);
+        // console.log(this.flag);
         $.post('/api/movie/mark', {
           hash: this.movie.hash,
           flag: this.flag
@@ -372,6 +372,9 @@ $(document).ready(function() {
       copy: function(index) {
         console.log(this.movies[index].url);
         // alert(this.movies[index].url);
+      },
+      sort: function() {
+        this.$dispatch('app-sort');
       }
     },
     events: {
@@ -561,6 +564,13 @@ $(document).ready(function() {
         location.hash = '#q=' + q;
         // console.log('app-search', q, location.hash);
         // this.$broadcast('search', q);
+      },
+      'app-sort': function() {
+        this.movies.sort(function(v1, v2) {
+          // console.log(v1.fileName - v2.fileName);
+          return v1.fileName.localeCompare(v2.fileName);
+        });
+        this.$emit('movie-list', this.movies, this.currentPage);
       }
     }
   });
