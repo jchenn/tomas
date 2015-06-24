@@ -8,12 +8,28 @@ block content
           ul.button-group
             li: a.button(href='#' title='添加' v-on='click: openAddMenu' onclick='return false;'): span.fa.fa-plus
             li: a.button(href='#' title='导入' v-on='click: openImportMenu' onclick='return false;'): span.fa.fa-file-o
-        .columns.medium-4.medium-offset-5
-          .row.collapse
-            .columns.medium-10
-              input(type='text' placeholder='搜索' v-model='q' v-on='keypress: search | key enter')
-            .columns.medium-2
-              a(href='#' onclick='return false;' v-on='click: search').button.postfix: span.fa.fa-search
+        .columns.medium-5.medium-offset-4.row.collapse.search-wrapper
+          .columns.medium-9
+            input(type='text' placeholder='搜索' v-model='q' v-on='keypress: search | key enter')
+          .columns.medium-3
+            ul.button-group.row.collapse
+              li.columns.medium-8: a(href='#' onclick='return false;' v-on='click: search').button.postfix: span.fa.fa-search
+              li.columns.medium-4
+                a(href='#' onclick='return false;' data-dropdown='flag-list' data-options='align: left').button.postfix
+                  span.fa.fa-caret-down
+                ul#flag-list.f-dropdown(data-dropdown-content)
+                  li: label
+                    input(type='checkbox' v-model='f[0]')
+                    | 未看
+                  li: label
+                    input(type='checkbox' v-model='f[1]')
+                    | 不好看
+                  li: label
+                    input(type='checkbox' v-model='f[2]')
+                    | 一般
+                  li: label
+                    input(type='checkbox' v-model='f[3]')
+                    | 喜欢
       section.body.clearfix(v-component='v-list' inline-template)
         .columns.medium-12: table
           thead: tr
@@ -27,7 +43,7 @@ block content
               td
                 span(v-text='$index + 1')
                 | &nbsp;&nbsp;
-                span.fa(v-class='fa-heart-o: flag == "2", fa-heart: flag == "3"')
+                span.fa(v-class='fa-times: flag === 0x02, fa-heart-o: flag === 0x04, fa-heart: flag == 0x08')
               td: a(v-text='fileName' v-on='click: openDetail($index)')
               td(v-text='size')
               td(v-text='type')
@@ -92,16 +108,16 @@ block content
             .columns.medium-3: span.value(v-text='movie.type')
           .row
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='0' v-on='change: mark')
+              input(type='radio' name='flag' v-model='flag' value='0x01' v-on='change: mark')
               |  未看
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='1' v-on='change: mark')
+              input(type='radio' name='flag' v-model='flag' value='0x02' v-on='change: mark')
               |  不好看
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='2' v-on='change: mark')
+              input(type='radio' name='flag' v-model='flag' value='0x04' v-on='change: mark')
               |  一般
             .columns.medium-3: label
-              input(type='radio' name='flag' v-model='flag' value='3' v-on='change: mark')
+              input(type='radio' name='flag' v-model='flag' value='0x08' v-on='change: mark')
               |  喜欢
           .row
             .columns.medium-12: ul.button-group.right

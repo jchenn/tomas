@@ -112,7 +112,7 @@ router.post('/update', function(req, res) {
 
 router.post('/mark', function(req, res) {
   var hash = req.body.hash,
-      flag = req.body.flag;
+      flag = parseInt(req.body.flag);
 
   movieDao.mark(hash, flag, function(err, movie) {
     if (err) {
@@ -135,8 +135,9 @@ router.get('/list', function(req, res) {
 
 router.get('/search', function(req, res) {
   console.log(req.query);
-  var q = req.query.q || '';
-  movieDao.search(q.trim(), function(err, arr) {
+  var q = req.query.q || '',
+      f = parseInt(req.query.f) || 0x0d;
+  movieDao.search(q.trim(), f, function(err, arr) {
     if (err) {
       res.send({errno: 1, message: err.message});
     } else {

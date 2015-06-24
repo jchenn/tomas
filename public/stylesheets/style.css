@@ -65,6 +65,10 @@ table .button {
   padding: 0;
 }
 
+.button-group.collapse > li {
+  margin: 0;
+}
+
 textarea {
   min-height: 150px;
 }
@@ -150,4 +154,20 @@ input[type='radio'] {
   z-index: 9;
   opacity: 1;
   1visibility: visible;
+}
+
+.search-wrapper .f-dropdown {
+  width: auto;
+  max-width: 200px;
+  min-width: 200px;
+  padding: .3rem 0;
+}
+
+.f-dropdown input[type='checkbox'] {
+  margin: 0 1rem 0 0;
+}
+
+.f-dropdown label {
+  margin: 0;
+  padding: .4rem .7rem;
 }

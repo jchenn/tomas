@@ -336,7 +336,8 @@ $(document).ready(function() {
   Vue.component('v-tool-bar', {
     data: function() {
       return {
-        q: ''
+        q: '',
+        f: [true, false, true, true]
       }
     },
     methods: {
@@ -350,7 +351,26 @@ $(document).ready(function() {
         // $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-right');
       },
       search: function() {
-        this.$dispatch('app-search', this.q);
+        var f = 0x00, i = 0;
+        for (i = 0; i < this.f.length; ++i) {
+          f += this.f[i] ? 0x01 << i : 0x00;
+          // console.log(f);
+        }
+        this.$dispatch('app-search', this.q, f);
+      }
+    },
+    events: {
+      changeKeywords: function(q) {
+        this.$set('q', q);
+      },
+      changeFlag: function(flag) {
+        console.log('flag', flag);
+        this.$set('f', [
+          (flag & 0x01) != 0,
+          (flag & 0x02) != 0,
+          (flag & 0x04) != 0,
+          (flag & 0x08) != 0
+        ]);
       }
     }
   });
@@ -383,9 +403,9 @@ $(document).ready(function() {
         this.$delete('movies');
         this.$set('movies', movies);
       },
-      search: function(q) {
+      search: function(q, f) {
         // console.log(q);
-        var xhr = q? $.get('/api/movie/search', {q: q}) : $.get('/api/movie/list');
+        var xhr = $.get('/api/movie/search', {q: q || '', f: f});
         xhr.success(function(responseText) {
           // TODO what if responseText.errno == 1?
           this.$dispatch('movie-list', responseText.data);
@@ -462,12 +482,16 @@ $(document).ready(function() {
         this.$broadcast('hide');
       },
       onhashchange: function() {
-        var seg = /^#q=(.*)/.exec(location.hash), xhr;
+        var seg = /^#q=(.*)&f=(\d+)/.exec(location.hash), xhr;
 
         if (seg) {
-          var q = decodeURIComponent(seg[1]);
-          // console.log(seg[1], q);
-          this.$broadcast('search', q);
+          var q = decodeURIComponent(seg[1]),
+              f = seg[2];
+          // console.log(seg[1], q, f);
+          this.$broadcast('changeFlag', parseInt(f));
+          this.$broadcast('changeKeywords', q);
+
+          this.$broadcast('search', q, f);
         } else {
           // console.log(this);
           this.$broadcast('search', null);
@@ -560,8 +584,8 @@ $(document).ready(function() {
         this.$set('currentPage', page);
         this.$broadcast('pageChanged', this.movies.slice(beg, beg + this.itemPerPage));
       },
-      'app-search': function(q) {
-        location.hash = '#q=' + q;
+      'app-search': function(q, f) {
+        location.hash = '#q=' + q + '&f=' + f;
         // console.log('app-search', q, location.hash);
         // this.$broadcast('search', q);
       },
@@ -577,7 +601,7 @@ $(document).ready(function() {
 
   vApp.init();
 
-  // $(document).foundation();
+  $(document).foundation();
 });
 
 
